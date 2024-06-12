@@ -2,13 +2,16 @@
 Sistema para liberação de IPS para N grupos de segurança e serviçs
 
 
-# npm install
+# para rodar o projeto
 
-# npm run build
+npm install
 
-# npm run start:dev
+npm run build
 
-## .env
+npm run start:dev
+
+
+## Arquivo .env
 
 #aws
 AWS_KEY=
