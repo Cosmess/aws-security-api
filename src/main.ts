@@ -8,8 +8,13 @@ async function bootstrap() {
   logger:["log","verbose","debug","warn","error"]
   });
 
-  // Middleware para obter o IP do cliente
   app.use(requestIp.mw());
+
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,POST',
+    credentials: true,
+  });
 
   await app.listen(3000);
 }

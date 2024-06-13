@@ -11,9 +11,16 @@ export class Access {
   @Column()
   newIp: string;
 
+  @Column()
+  typeGroup: string;
+
+  @Column()
+  typeService: string;
+  
   @CreateDateColumn()
   created: Date;
 
   @UpdateDateColumn()
   updated: Date;
+
 }
