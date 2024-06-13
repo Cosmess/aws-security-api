@@ -91,7 +91,7 @@ export class AccessService {
 
       await ec2.authorizeSecurityGroupIngress(paramsAuthorize).promise();
 
-      const access = this.accessRepository.create({ ruleDescription, newIp: newIpCidr, typeGroup, typeService });
+      const access = this.accessRepository.create({ ruleDescription, newIp, typeGroup, typeService });
       return this.accessRepository.save(access);
     } catch (error) {
       throw new Error(`Erro ao modificar as regras de entrada: ${error.message}`);
