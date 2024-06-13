@@ -10,6 +10,8 @@ import { User } from './repository/user.entity';
 import { Permission } from './repository/permission.entity'
 import * as dotenv from 'dotenv'
 import { HealthController } from './routes/health.controller';
+import { EmailModule } from './email/email.module';
+
 dotenv.config();
 
 @Module({
@@ -25,6 +27,7 @@ dotenv.config();
       synchronize: true,
     }),
     TypeOrmModule.forFeature([Access, Group, Service, User, Permission]),
+    EmailModule,
   ],
   controllers: [AccessController,HealthController],
   providers: [AccessService],

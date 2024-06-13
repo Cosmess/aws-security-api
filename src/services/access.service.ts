@@ -8,6 +8,8 @@ import { User } from '../repository/user.entity';
 import { Permission } from '../repository/permission.entity';
 import * as AWS from 'aws-sdk';
 import * as dotenv from 'dotenv'
+import { EmailService } from '../email/email.service';
+import { VerificationService } from '../email/verification.service';
 
 dotenv.config();
 AWS.config.update({
@@ -31,13 +33,28 @@ export class AccessService {
     private userRepository: Repository<User>,
     @InjectRepository(Permission)
     private permissionRepository: Repository<Permission>,
+    private emailService: EmailService,
+    private verificationService: VerificationService,
   ) {}
 
-  async revokeAndAddIngressRuleByDescription(ruleDescription: string, newIp: string, userId: number, typeGroup: string, typeService: string): Promise<Access> {
+  async sendVerificationCode(email: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { email: email, active: true } });
+    if (!user) {
+      throw new HttpException('Usuário, grupo ou serviço inválido', HttpStatus.FORBIDDEN);
+    }
+    const code = this.verificationService.generateVerificationCode(email);
+    await this.emailService.sendVerificationEmail(email, code);
+  }
+
+
+  async revokeAndAddIngressRuleByDescription(ruleDescription: string, newIp: string, verificationCode: string, typeGroup: string, typeService: string): Promise<Access> {
     const newIpCidr = `${newIp}/32`;
-    const user = await this.userRepository.findOne({ where: { email: ruleDescription } });
+    const user = await this.userRepository.findOne({ where: { email: ruleDescription, active: true } });
     const group = await this.groupRepository.findOne({ where: { typeGroup } });
     const service = await this.serviceRepository.findOne({ where: { typeService } });
+
+     
+     this.verificationService.verifyCode(ruleDescription, verificationCode);
 
     if (!user || !group || !service) {
       throw new HttpException('Usuário, grupo ou serviço inválido', HttpStatus.FORBIDDEN);

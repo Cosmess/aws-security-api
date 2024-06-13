@@ -10,7 +10,10 @@ export class User {
   email: string;
 
   @Column()
-  password: string;
+  team: string;
+
+  @Column()
+  active: boolean;
 
   @OneToMany(() => Permission, permission => permission.user)
   permissions: Permission[];
